@@ -4,6 +4,12 @@ using UnityEngine;
 using Newtonsoft.Json;
 using Unity.VisualScripting;
 
+public enum SettingsType
+{
+	AudioSettings,
+	ControlSettings,
+	GraphicsSettings
+}
 
 public class GameSettings
 {
@@ -13,6 +19,10 @@ public class GameSettings
 	public AudioSettings _audioSettings;
 	public ControlSettings _controlSettings;
 	public GraphicsSettings _graphicsSettings;
+
+	string _audioSettingsName = SettingsType.AudioSettings.ToString();
+	string _controlSettingsName = SettingsType.ControlSettings.ToString();
+	string _graphicsSettingsName = SettingsType.GraphicsSettings.ToString();
 
 	public GameSettings()
 	{
@@ -63,9 +73,9 @@ public class GameSettings
 		_graphicsSettings = new GraphicsSettings(1920, 1080, true);
 		_controlSettings = new ControlSettings(0.5f, "WASD");
 
-		SetSettings("AudioSettings", _audioSettings);
-		SetSettings("GraphicsSettings", _graphicsSettings);
-		SetSettings("ControlSettings", _controlSettings);
+		SetSettings(_audioSettingsName, _audioSettings);
+		SetSettings(_graphicsSettingsName, _graphicsSettings);
+		SetSettings(_controlSettingsName, _controlSettings);
 	}
 
 	// Method to save settings to a JSON file
@@ -95,9 +105,9 @@ public class GameSettings
 				_graphicsSettings = deserializedSettings.GraphicsSettings;
 				_controlSettings = deserializedSettings.ControlSettings;
 
-				SetSettings("AudioSettings", _audioSettings);
-				SetSettings("GraphicsSettings", _graphicsSettings);
-				SetSettings("ControlSettings", _controlSettings);
+				SetSettings(_audioSettingsName, _audioSettings);
+				SetSettings(_graphicsSettingsName, _graphicsSettings);
+				SetSettings(_controlSettingsName, _controlSettings);
 			}
 		}
 		else
@@ -108,58 +118,58 @@ public class GameSettings
 
 	public void SetMasterVolume(float value)
 	{
-		var audioSettings = GetSettings<AudioSettings>("AudioSettings");
+		var audioSettings = GetSettings<AudioSettings>(_audioSettingsName);
 		audioSettings.masterVolume = value;
-		SetSettings("AudioSettings", audioSettings);
+		SetSettings(_audioSettingsName, audioSettings);
 	}
 
 	public void SetMusicVolume(float value)
 	{
-		var audioSettings = GetSettings<AudioSettings>("AudioSettings");
+		var audioSettings = GetSettings<AudioSettings>(_audioSettingsName);
 		audioSettings.musicVolume = value;
-		SetSettings("AudioSettings", audioSettings);
+		SetSettings(_audioSettingsName, audioSettings);
 	}
 
 	public void SetSFXVolume(float value)
 	{
-		var audioSettings = GetSettings<AudioSettings>("AudioSettings");
+		var audioSettings = GetSettings<AudioSettings>(_audioSettingsName);
 		audioSettings.sfxVolume = value;
-		SetSettings("AudioSettings", audioSettings);
+		SetSettings(_audioSettingsName, audioSettings);
 	}
 
 	public void SetResolution(int width, int height)
 	{
-		var graphicsSettings = GetSettings<GraphicsSettings>("GraphicsSettings");
+		var graphicsSettings = GetSettings<GraphicsSettings>(_graphicsSettingsName);
 		graphicsSettings.resolutionWidth = width;
 		graphicsSettings.resolutionHeight = height;
-		SetSettings("GraphicsSettings", graphicsSettings);
+		SetSettings(_graphicsSettingsName, graphicsSettings);
 	}
 
 	public void SetFullScreen(bool value)
 	{
-		var graphicsSettings = GetSettings<GraphicsSettings>("GraphicsSettings");
+		var graphicsSettings = GetSettings<GraphicsSettings>(_graphicsSettingsName);
 		graphicsSettings.fullScreen = value;
-		SetSettings("GraphicsSettings", graphicsSettings);
+		SetSettings(_graphicsSettingsName, graphicsSettings);
 	}
 
 	public void SetMouseSensitivity(float value)
 	{
-		var controlSettings = GetSettings<ControlSettings>("ControlSettings");
+		var controlSettings = GetSettings<ControlSettings>(_controlSettingsName);
 		controlSettings.mouseSensitivity = value;
-		SetSettings("ControlSettings", controlSettings);
+		SetSettings(_controlSettingsName, controlSettings);
 	}
 
 	public void SetKeyBindings(string value)
 	{
-		var controlSettings = GetSettings<ControlSettings>("ControlSettings");
+		var controlSettings = GetSettings<ControlSettings>(_controlSettingsName);
 		controlSettings.keyBindings = value;
-		SetSettings("ControlSettings", controlSettings);
+		SetSettings(_controlSettingsName, controlSettings);
 	}
 
 	// Method to print all settings to the console
 	public void PrintSettings()
 	{
-		if (_settings.TryGetValue("AudioSettings", out var audioObj) && audioObj is AudioSettings audioSettings)
+		if (_settings.TryGetValue(_audioSettingsName, out var audioObj) && audioObj is AudioSettings audioSettings)
 		{
 			Debug.Log("Audio Settings:");
 			Debug.Log("Master Volume: " + audioSettings.masterVolume);
@@ -167,14 +177,14 @@ public class GameSettings
 			Debug.Log("SFX Volume: " + audioSettings.sfxVolume);
 		}
 
-		if (_settings.TryGetValue("GraphicsSettings", out var graphicsObj) && graphicsObj is GraphicsSettings graphicsSettings)
+		if (_settings.TryGetValue(_graphicsSettingsName, out var graphicsObj) && graphicsObj is GraphicsSettings graphicsSettings)
 		{
 			Debug.Log("Graphics Settings:");
 			Debug.Log("Resolution: " + graphicsSettings.resolutionWidth + "x" + graphicsSettings.resolutionHeight);
 			Debug.Log("Full Screen: " + graphicsSettings.fullScreen);
 		}
 
-		if (_settings.TryGetValue("ControlSettings", out var controlObj) && controlObj is ControlSettings controlSettings)
+		if (_settings.TryGetValue(_controlSettingsName, out var controlObj) && controlObj is ControlSettings controlSettings)
 		{
 			Debug.Log("Control Settings:");
 			Debug.Log("Mouse Sensitivity: " + controlSettings.mouseSensitivity);
